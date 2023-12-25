@@ -12,7 +12,7 @@ Working on developing a chess game with React. Wish me luck!!
 
 You can check out the deployed version with Netlify [here](https://claramarsango-chess-react.netlify.app/).
 
-Here are the results of the SonarCloud scans in real-time:
+Here are the results of the [SonarCloud](https://sonarcloud.io/summary/new_code?id=claramarsango_chess-react) scans in real-time:
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=claramarsango_chess-react&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=claramarsango_chess-react)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=claramarsango_chess-react&metric=coverage)](https://sonarcloud.io/summary/new_code?id=claramarsango_chess-react)
