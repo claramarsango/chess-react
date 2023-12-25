@@ -1,4 +1,5 @@
 import './App.css';
+import Board from './Board/Board';
 
 const App = () => {
   return (
@@ -11,6 +12,7 @@ const App = () => {
           <h3>🚧 ...Under construction... 🚧</h3>
           <p>Thanks for stopping by! 🦦</p>
         </section>
+        <Board />
       </main>
     </>
   );
