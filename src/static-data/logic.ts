@@ -32,32 +32,34 @@ export const buildInitialFormationFor = (colour: COLOURS) => {
   const firstRow = colour === COLOURS.WHITE ? 1 : 8;
   const secondRow = colour === COLOURS.WHITE ? 2 : 7;
 
-  for (const square of BOARD) {
-    const squareString = square.toString();
-    const squareRow = square[1];
+  const firstRowPositions = BOARD.filter(square => square[1] === firstRow);
+  const secondRowPositions = BOARD.filter(square => square[1] === secondRow);
 
-    if (squareRow === secondRow) {
-      completeFormation.push(buildPiece(colour, 'pawn', square));
-    } else if (
-      squareString === ['A', firstRow].toString() ||
-      squareString === ['H', firstRow].toString()
-    ) {
-      completeFormation.push(buildPiece(colour, 'rook', square));
-    } else if (
-      squareString === ['B', firstRow].toString() ||
-      squareString === ['G', firstRow].toString()
-    ) {
-      completeFormation.push(buildPiece(colour, 'knight', square));
-    } else if (
-      squareString === ['C', firstRow].toString() ||
-      squareString === ['F', firstRow].toString()
-    ) {
-      completeFormation.push(buildPiece(colour, 'bishop', square));
-    } else if (squareString === ['D', firstRow].toString()) {
-      completeFormation.push(buildPiece(colour, 'queen', square));
-    } else if (squareString === ['E', firstRow].toString()) {
-      completeFormation.push(buildPiece(colour, 'king', square));
+  for (let i = 0; i <= 4; i++) {
+    const position = firstRowPositions[i];
+    const oppositeEnd = [
+      firstRowPositions[firstRowPositions.length - (i + 1)][0],
+      position[1],
+    ];
+
+    if (!i) {
+      completeFormation.push(buildPiece(colour, 'rook', position));
+      completeFormation.push(buildPiece(colour, 'rook', oppositeEnd));
+    } else if (i === 1) {
+      completeFormation.push(buildPiece(colour, 'knight', position));
+      completeFormation.push(buildPiece(colour, 'knight', oppositeEnd));
+    } else if (i === 2) {
+      completeFormation.push(buildPiece(colour, 'bishop', position));
+      completeFormation.push(buildPiece(colour, 'bishop', oppositeEnd));
+    } else if (i === 3) {
+      completeFormation.push(buildPiece(colour, 'queen', position));
+    } else {
+      completeFormation.push(buildPiece(colour, 'king', position));
     }
+  }
+
+  for (const position of secondRowPositions) {
+    completeFormation.push(buildPiece(colour, 'pawn', position));
   }
 
   return completeFormation;
