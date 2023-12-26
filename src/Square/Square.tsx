@@ -1,24 +1,20 @@
 import { FC } from 'react';
 import './square-styled.css';
-import { FigureModel } from '../models';
-import Figure from '../Figure/Figure';
+import { PieceModel } from '../static-data/types';
+import Piece from '../Piece/Piece';
+import { BLACKS, WHITES } from '../static-data/constants';
 
 interface SquareProps {
   position: (string | number)[];
-  lightTeam: FigureModel[];
-  darkTeam: FigureModel[];
 }
 
-const Square: FC<SquareProps> = ({ position, lightTeam, darkTeam }) => {
-  const setUpTeams = (...teams: FigureModel[][]) => {
-    for (const team of teams) {
-      for (const figure of team) {
-        if (figure.position.toString() === position.toString())
+const Square: FC<SquareProps> = ({ position }) => {
+  const populateBoardWith = (...allPlayersPieces: PieceModel[][]) => {
+    for (const playerPieces of allPlayersPieces) {
+      for (const piece of playerPieces) {
+        if (piece.position.toString() === position.toString())
           return (
-            <Figure
-              key={figure.position.toString()}
-              imageUrl={figure.diagram}
-            />
+            <Piece key={piece.position.toString()} imageUrl={piece.diagram} />
           );
       }
     }
@@ -32,7 +28,7 @@ const Square: FC<SquareProps> = ({ position, lightTeam, darkTeam }) => {
           : 'square__odd-row'
       }`}
     >
-      {setUpTeams(darkTeam, lightTeam)}
+      {populateBoardWith(WHITES, BLACKS)}
     </div>
   );
 };
