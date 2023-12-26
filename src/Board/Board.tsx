@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import Square from '../Square/Square';
 import './board-styled.css';
 import BoardBorder from '../BoardBorder/BoardBorder';
@@ -17,11 +16,7 @@ const buildBoard = (rows: number[], columns: string[]) => {
 };
 
 const Board = () => {
-  const [board, setBoard] = useState([['', 0]]);
-
-  useEffect(() => {
-    setBoard(buildBoard(ROWS, COLUMNS));
-  }, [setBoard]);
+  const board = buildBoard(ROWS, COLUMNS);
 
   return (
     <section className="board-container">
