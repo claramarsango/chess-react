@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import Square from '../Square/Square';
 import './board-styled.css';
 import BoardBorder from '../BoardBorder/BoardBorder';
-
-const COLUMNS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-const ROWS = Array.from({ length: 8 }, (_, index) => index + 1).reverse();
+import { COLUMNS, DARK_TEAM, LIGHT_TEAM, ROWS } from '../constants';
 
 const buildBoard = (rows: number[], columns: string[]) => {
   const completeBoard = [];
@@ -33,7 +31,12 @@ const Board = () => {
         <BoardBorder>{COLUMNS}</BoardBorder>
         <section className="board__squares-container">
           {board.map(square => (
-            <Square key={square.join('')} position={square} />
+            <Square
+              key={square.join('')}
+              position={square}
+              lightTeam={LIGHT_TEAM}
+              darkTeam={DARK_TEAM}
+            />
           ))}
         </section>
         <BoardBorder>{COLUMNS}</BoardBorder>
