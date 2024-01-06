@@ -1,4 +1,4 @@
-import { COLOURS, DataStructure } from '../../static-data/types';
+import { DataStructure } from '../../static-data/types';
 
 export type ActionType = {
   type: string;
@@ -9,7 +9,7 @@ const chessReducer = (
   previousState: DataStructure,
   action: ActionType,
 ): DataStructure => {
-  const { allActivePieces, turn } = previousState;
+  const { allActivePieces } = previousState;
   const updatedPieces = [...allActivePieces];
 
   switch (action.type) {
@@ -48,26 +48,6 @@ const chessReducer = (
       return {
         ...previousState,
         allActivePieces: updatedPieces,
-      };
-    }
-
-    case 'movePiece': {
-      for (const piece of allActivePieces) {
-        if (piece.isSelected) {
-          const movedPiece = {
-            ...piece,
-            position: action.payload,
-            isSelected: false,
-          };
-
-          updatedPieces.splice(updatedPieces.indexOf(piece), 1, movedPiece);
-        }
-      }
-
-      return {
-        ...previousState,
-        allActivePieces: updatedPieces,
-        turn: turn === COLOURS.WHITE ? COLOURS.BLACK : COLOURS.WHITE,
       };
     }
 
