@@ -23,7 +23,24 @@ h1 {
 .game-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  align-items: center;
+  gap: 3rem;
   font-family: 'Noto', var(--fallback-fonts);
   margin-bottom: 2rem;
+}
+
+.game__match-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 70%;
+  max-width: 400px;
+}
+
+@media (min-width: 1440px) {
+  .game__match-container {
+    max-width: 500px;
+    max-height: 80%;
+  }
 }

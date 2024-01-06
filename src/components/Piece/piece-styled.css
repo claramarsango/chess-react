@@ -1,0 +1,9 @@
+.piece-container {
+  background: transparent;
+  border: transparent;
+  padding: 5px;
+}
+
+.piece__diagram {
+  width: 100%;
+}

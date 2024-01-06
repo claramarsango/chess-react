@@ -1,5 +1,6 @@
 import './App.css';
-import Board from './Board/Board';
+import Board from './components/Board/Board';
+import TurnsDisplay from './components/TunsDisplay/TurnsDisplay';
 
 const App = () => {
   return (
@@ -12,7 +13,10 @@ const App = () => {
           <h3>🚧 ...Under construction... 🚧</h3>
           <p>Thanks for stopping by! 🦦</p>
         </section>
-        <Board />
+        <section className="game__match-container">
+          <TurnsDisplay />
+          <Board />
+        </section>
       </main>
     </>
   );

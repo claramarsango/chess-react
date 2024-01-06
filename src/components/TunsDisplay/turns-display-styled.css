@@ -1,0 +1,21 @@
+.turns-container {
+  display: flex;
+  justify-content: center;
+  gap: 25%;
+  width: 70%;
+}
+
+.turns-container img {
+  width: 100%;
+}
+
+.turns__turn {
+  width: 20%;
+  aspect-ratio: 1/1;
+  padding: 2%;
+}
+
+.turn--selected {
+  background: rgba(236, 203, 141, 0.804);
+  border-radius: 4px;
+}
