@@ -4,7 +4,14 @@ export enum COLOURS {
 }
 
 export interface PieceModel {
+  player: COLOURS;
   piece: string;
   diagram: string;
-  position: (string | number)[];
+  position: string;
+  isSelected: boolean;
+}
+
+export interface DataStructure {
+  allActivePieces: PieceModel[];
+  turn: COLOURS;
 }
