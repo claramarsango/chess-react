@@ -48,7 +48,8 @@ export const buildInitialFormationFor = (...colours: COLOURS[]) => {
 
     for (let i = 0; i <= 4; i++) {
       const position = backRowPositions[i];
-      const oppositeEnd = backRowPositions.toReversed()[i];
+      const reversedBackRowPositions = Array.from(backRowPositions).reverse();
+      const oppositeEnd = reversedBackRowPositions[i];
 
       if (!i) {
         allPieces.push(buildPiece(colour, 'rook', position));
