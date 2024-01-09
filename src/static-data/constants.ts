@@ -9,7 +9,7 @@ export const ROWS = Array.from(
 
 export const BOARD = buildEmptyBoard(ROWS, COLUMNS);
 
-export const ALL_INITIAL_PIECES = buildInitialFormationFor(
-  COLOURS.WHITE,
-  COLOURS.BLACK,
-);
+const WHITES = buildInitialFormationFor(COLOURS.WHITE);
+const BLACKS = buildInitialFormationFor(COLOURS.BLACK);
+
+export const ALL_INITIAL_PIECES = WHITES.concat(BLACKS);
