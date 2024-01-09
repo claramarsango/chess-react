@@ -13,16 +13,17 @@ const Square: FC<SquareProps> = ({ squarePosition }) => {
   const { data, dispatch } = useContext(PiecesContext);
   const { allActivePieces } = data;
 
-  const piecePositionOnBoard = allActivePieces.find(
-    piece => piece.position === squarePosition,
-  );
   const selectedPiece = allActivePieces.find(piece => piece.isSelected);
 
   const renderElementDependingOn = (squarePositionOnBoard: string) => {
-    return piecePositionOnBoard ? (
+    const pieceInsideSquare = allActivePieces.find(
+      piece => piece.position === squarePositionOnBoard,
+    );
+
+    return pieceInsideSquare ? (
       <Piece
         key={squarePositionOnBoard}
-        imageUrl={piecePositionOnBoard.diagram}
+        imageUrl={pieceInsideSquare.diagram}
         position={squarePositionOnBoard}
       />
     ) : (

@@ -1,4 +1,4 @@
-import { FC, useReducer } from 'react';
+import { FC, useMemo, useReducer } from 'react';
 import PiecesContext, { DEFAULT_CONTEXT } from './chessApp.context';
 import chessReducer from '../reducer/chessReducer';
 
@@ -7,10 +7,15 @@ interface PiecesProviderProps {
 }
 
 const PiecesProvider: FC<PiecesProviderProps> = ({ children }) => {
-  const [data, dispatch] = useReducer(chessReducer, DEFAULT_CONTEXT);
+  const stateUpdate = useReducer(chessReducer, DEFAULT_CONTEXT);
+
+  const optimizedStateUpdate = useMemo(() => {
+    const [data, dispatch] = stateUpdate;
+    return { data, dispatch };
+  }, [stateUpdate]);
 
   return (
-    <PiecesContext.Provider value={{ data, dispatch }}>
+    <PiecesContext.Provider value={optimizedStateUpdate}>
       {children}
     </PiecesContext.Provider>
   );

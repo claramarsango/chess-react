@@ -1,9 +1,4 @@
-import { COLOURS, DataStructure } from '../../static-data/types';
-
-export type ActionType = {
-  type: string;
-  payload: string;
-};
+import { ActionType, COLOURS, DataStructure } from '../../static-data/types';
 
 const chessReducer = (
   previousState: DataStructure,
@@ -11,19 +6,25 @@ const chessReducer = (
 ): DataStructure => {
   const { allActivePieces, turn } = previousState;
   const updatedPieces = [...allActivePieces];
+  const pieceToSelect = allActivePieces.find(
+    piece => piece.position === action.payload,
+  );
+  const selectedPiece = allActivePieces.find(piece => piece.isSelected);
 
   switch (action.type) {
     case 'selectPiece': {
-      for (const piece of allActivePieces) {
-        if (piece.position === action.payload) {
-          const selectedPiece = {
-            ...piece,
-            isSelected: true,
-          };
-
-          updatedPieces.splice(updatedPieces.indexOf(piece), 1, selectedPiece);
-        }
+      if (pieceToSelect) {
+        const selectedPiece = {
+          ...pieceToSelect,
+          isSelected: true,
+        };
+        updatedPieces.splice(
+          updatedPieces.indexOf(pieceToSelect),
+          1,
+          selectedPiece,
+        );
       }
+
       return {
         ...previousState,
         allActivePieces: updatedPieces,
@@ -31,20 +32,19 @@ const chessReducer = (
     }
 
     case 'unselectPiece': {
-      for (const piece of allActivePieces) {
-        if (piece.isSelected) {
-          const unselectedPiece = {
-            ...piece,
-            isSelected: false,
-          };
+      if (selectedPiece) {
+        const unselectedPiece = {
+          ...selectedPiece,
+          isSelected: false,
+        };
 
-          updatedPieces.splice(
-            updatedPieces.indexOf(piece),
-            1,
-            unselectedPiece,
-          );
-        }
+        updatedPieces.splice(
+          updatedPieces.indexOf(selectedPiece),
+          1,
+          unselectedPiece,
+        );
       }
+
       return {
         ...previousState,
         allActivePieces: updatedPieces,
@@ -52,16 +52,18 @@ const chessReducer = (
     }
 
     case 'movePiece': {
-      for (const piece of allActivePieces) {
-        if (piece.isSelected) {
-          const movedPiece = {
-            ...piece,
-            position: action.payload,
-            isSelected: false,
-          };
+      if (selectedPiece) {
+        const movedPiece = {
+          ...selectedPiece,
+          position: action.payload,
+          isSelected: false,
+        };
 
-          updatedPieces.splice(updatedPieces.indexOf(piece), 1, movedPiece);
-        }
+        updatedPieces.splice(
+          updatedPieces.indexOf(selectedPiece),
+          1,
+          movedPiece,
+        );
       }
 
       return {

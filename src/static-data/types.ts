@@ -15,3 +15,8 @@ export interface DataStructure {
   allActivePieces: PieceModel[];
   turn: COLOURS;
 }
+
+export type ActionType = {
+  type: string;
+  payload: string;
+};

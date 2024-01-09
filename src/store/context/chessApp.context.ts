@@ -1,6 +1,5 @@
 import { Dispatch, createContext } from 'react';
-import { ActionType } from '../reducer/chessReducer';
-import { COLOURS, DataStructure } from '../../static-data/types';
+import { ActionType, COLOURS, DataStructure } from '../../static-data/types';
 import { ALL_INITIAL_PIECES } from '../../static-data/constants';
 
 interface PiecesContextStructure {
