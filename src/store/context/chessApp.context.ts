@@ -10,6 +10,7 @@ interface PiecesContextStructure {
 export const DEFAULT_CONTEXT = {
   allActivePieces: ALL_INITIAL_PIECES,
   turn: COLOURS.WHITE,
+  capturedPieces: [],
 };
 
 const PiecesContext = createContext<PiecesContextStructure>({

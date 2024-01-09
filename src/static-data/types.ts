@@ -9,11 +9,13 @@ export interface PieceModel {
   diagram: string;
   position: string;
   isSelected: boolean;
+  isCaptured: boolean;
 }
 
 export interface DataStructure {
   allActivePieces: PieceModel[];
   turn: COLOURS;
+  capturedPieces: PieceModel[];
 }
 
 export type ActionType = {

@@ -24,6 +24,7 @@ export const buildPiece = (
     diagram: `/assets/chess-pieces/${colour}/${colour}-${piece}.png`,
     position,
     isSelected: false,
+    isCaptured: false,
   };
   return completePiece;
 };
