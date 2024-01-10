@@ -3,7 +3,7 @@ import './square-styled.css';
 import Piece from '../Piece/Piece';
 import PiecesContext from '../../store/context/chessApp.context';
 import { possiblePawnMoves } from '../../static-data/logic/pieces';
-import { PieceModel } from '../../static-data/types';
+import { ACTION_TYPES, PieceModel } from '../../static-data/types';
 
 interface SquareProps {
   squarePosition: string;
@@ -73,7 +73,7 @@ const Square: FC<SquareProps> = ({ squarePosition }) => {
       return;
 
     dispatch({
-      type: 'movePiece',
+      type: ACTION_TYPES.MOVED_PIECE,
       payload: newPosition,
     });
   };

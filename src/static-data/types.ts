@@ -18,7 +18,14 @@ export interface DataStructure {
   capturedPieces: PieceModel[];
 }
 
-export type ActionType = {
+export enum ACTION_TYPES {
+  SELECTED_PIECE = 'selectedPiece',
+  UNSELECTED_PIECE = 'unselectedPiece',
+  MOVED_PIECE = 'movedPiece',
+  CAPTURED_PIECE = 'capturedPiece',
+}
+
+export type PieceAction = {
   type: string;
   payload: string;
 };
