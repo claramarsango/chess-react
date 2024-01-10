@@ -1,45 +1,56 @@
-import { ActionType, COLOURS, DataStructure } from '../../static-data/types';
+import {
+  PieceAction,
+  COLOURS,
+  DataStructure,
+  ACTION_TYPES,
+} from '../../static-data/types';
+
+const { SELECTED_PIECE, UNSELECTED_PIECE, MOVED_PIECE, CAPTURED_PIECE } =
+  ACTION_TYPES;
 
 const chessReducer = (
   previousState: DataStructure,
-  action: ActionType,
+  action: PieceAction,
 ): DataStructure => {
-  const { allActivePieces, turn } = previousState;
-  const updatedPieces = [...allActivePieces];
-  const pieceToSelect = allActivePieces.find(
-    piece => piece.position === action.payload,
-  );
+  const { allActivePieces, turn, capturedPieces } = previousState;
+  const updatedActivePieces = [...allActivePieces];
+  const newTurn = turn === COLOURS.WHITE ? COLOURS.BLACK : COLOURS.WHITE;
+  const updatedCapturedPieces = [...capturedPieces];
   const selectedPiece = allActivePieces.find(piece => piece.isSelected);
 
   switch (action.type) {
-    case 'selectPiece': {
+    case SELECTED_PIECE: {
+      const pieceToSelect = allActivePieces.find(
+        piece => piece.position === action.payload,
+      );
+
       if (pieceToSelect) {
-        const selectedPiece = {
+        const newSelectedPiece = {
           ...pieceToSelect,
           isSelected: true,
         };
-        updatedPieces.splice(
-          updatedPieces.indexOf(pieceToSelect),
+        updatedActivePieces.splice(
+          updatedActivePieces.indexOf(pieceToSelect),
           1,
-          selectedPiece,
+          newSelectedPiece,
         );
       }
 
       return {
         ...previousState,
-        allActivePieces: updatedPieces,
+        allActivePieces: updatedActivePieces,
       };
     }
 
-    case 'unselectPiece': {
+    case UNSELECTED_PIECE: {
       if (selectedPiece) {
         const unselectedPiece = {
           ...selectedPiece,
           isSelected: false,
         };
 
-        updatedPieces.splice(
-          updatedPieces.indexOf(selectedPiece),
+        updatedActivePieces.splice(
+          updatedActivePieces.indexOf(selectedPiece),
           1,
           unselectedPiece,
         );
@@ -47,11 +58,11 @@ const chessReducer = (
 
       return {
         ...previousState,
-        allActivePieces: updatedPieces,
+        allActivePieces: updatedActivePieces,
       };
     }
 
-    case 'movePiece': {
+    case MOVED_PIECE: {
       if (selectedPiece) {
         const movedPiece = {
           ...selectedPiece,
@@ -59,17 +70,48 @@ const chessReducer = (
           isSelected: false,
         };
 
-        updatedPieces.splice(
-          updatedPieces.indexOf(selectedPiece),
+        updatedActivePieces.splice(
+          updatedActivePieces.indexOf(selectedPiece),
           1,
           movedPiece,
         );
       }
 
+      const opponentPieceToCapture = allActivePieces.find(
+        piece => piece.position === action.payload && piece.player !== turn,
+      );
+
       return {
         ...previousState,
-        allActivePieces: updatedPieces,
-        turn: turn === COLOURS.WHITE ? COLOURS.BLACK : COLOURS.WHITE,
+        allActivePieces: updatedActivePieces,
+        turn: !opponentPieceToCapture ? newTurn : turn,
+      };
+    }
+
+    case CAPTURED_PIECE: {
+      const pieceToCapture = allActivePieces.find(
+        piece => piece.position === action.payload && piece.player !== turn,
+      );
+
+      if (pieceToCapture) {
+        updatedActivePieces.splice(
+          updatedActivePieces.indexOf(pieceToCapture),
+          1,
+        );
+
+        const capturedPiece = {
+          ...pieceToCapture,
+          isCaptured: true,
+        };
+
+        updatedCapturedPieces.push(capturedPiece);
+      }
+
+      return {
+        ...previousState,
+        allActivePieces: updatedActivePieces,
+        turn: newTurn,
+        capturedPieces: updatedCapturedPieces,
       };
     }
 

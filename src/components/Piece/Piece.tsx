@@ -1,6 +1,8 @@
 import { FC, useContext } from 'react';
 import './piece-styled.css';
 import PiecesContext from '../../store/context/chessApp.context';
+import { possiblePawnCaptures } from '../../static-data/logic/pieces';
+import { ACTION_TYPES } from '../../static-data/types';
 
 interface PieceProps {
   imageUrl: string;
@@ -9,15 +11,34 @@ interface PieceProps {
 
 const Piece: FC<PieceProps> = ({ imageUrl, position }) => {
   const { data, dispatch } = useContext(PiecesContext);
-  const { allActivePieces } = data;
+  const { allActivePieces, turn } = data;
   const splitImgTitle = imageUrl.split('/')[4].split('.')[0].split('-');
 
   const handleClick = (selectedPosition: string) => {
+    const selectedPiece = allActivePieces.find(piece => piece.isSelected);
+    const allPossiblePawnCaptures =
+      selectedPiece && possiblePawnCaptures(selectedPiece, allActivePieces);
+
+    if (
+      allPossiblePawnCaptures &&
+      allPossiblePawnCaptures.find(
+        piecePosition => piecePosition === selectedPosition,
+      )
+    ) {
+      dispatch({
+        type: ACTION_TYPES.MOVED_PIECE,
+        payload: selectedPosition,
+      });
+      return dispatch({
+        type: ACTION_TYPES.CAPTURED_PIECE,
+        payload: selectedPosition,
+      });
+    }
+
     //exits if the selected piece doesn't match the current turn
     if (
       allActivePieces.find(
-        piece =>
-          piece.position === selectedPosition && piece.player !== data.turn,
+        piece => piece.position === selectedPosition && piece.player !== turn,
       )
     )
       return;
@@ -34,10 +55,13 @@ const Piece: FC<PieceProps> = ({ imageUrl, position }) => {
         piece => piece.isSelected && piece.position !== selectedPosition,
       )
     ) {
-      dispatch({ type: 'unselectPiece', payload: selectedPosition });
+      dispatch({
+        type: ACTION_TYPES.UNSELECTED_PIECE,
+        payload: selectedPosition,
+      });
     }
 
-    dispatch({ type: 'selectPiece', payload: selectedPosition });
+    dispatch({ type: ACTION_TYPES.SELECTED_PIECE, payload: selectedPosition });
   };
 
   return (
