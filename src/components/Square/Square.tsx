@@ -29,7 +29,9 @@ const Square: FC<SquareProps> = ({ squarePosition }) => {
     ) : (
       <button
         className="square__empty"
-        onClick={() => handleClick(squarePositionOnBoard)}
+        onClick={() =>
+          selectedPiece && handleClick(squarePositionOnBoard, selectedPiece)
+        }
         data-testid="empty-square"
       >
         <div
@@ -60,13 +62,13 @@ const Square: FC<SquareProps> = ({ squarePosition }) => {
       : '';
   };
 
-  const handleClick = (newPosition: string) => {
+  const handleClick = (newPosition: string, currentPiece: PieceModel) => {
     // exits if no pieces are selected
     if (allActivePieces.every(piece => !piece.isSelected)) return;
     // exits if the new selected position doesn't match with the pawn's possible moves
     if (
-      selectedPiece &&
-      !possiblePawnMoves(selectedPiece).find(
+      currentPiece &&
+      !possiblePawnMoves(currentPiece).find(
         possiblePosition => possiblePosition === newPosition,
       )
     )
