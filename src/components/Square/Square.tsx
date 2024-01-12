@@ -63,8 +63,6 @@ const Square: FC<SquareProps> = ({ squarePosition }) => {
   };
 
   const handleClick = (newPosition: string, currentPiece: PieceModel) => {
-    // exits if no pieces are selected
-    if (allActivePieces.every(piece => !piece.isSelected)) return;
     // exits if the new selected position doesn't match with the pawn's possible moves
     if (
       currentPiece &&

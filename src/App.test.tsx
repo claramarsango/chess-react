@@ -204,21 +204,4 @@ describe('Given a chess game,', () => {
       boardDispositionAfterBlackMove,
     );
   });
-
-  test('when no pieces are selected and an empty square is clicked, then nothing should change', async () => {
-    render(
-      <PiecesProvider>
-        <App />
-      </PiecesProvider>,
-    );
-
-    const allSquares = await screen.findAllByRole('button');
-    const emptySquares = await screen.findAllByTestId('empty-square');
-    const emptySquare = emptySquares[0];
-    const unselectedSquares = await screen.findAllByTestId('');
-
-    await userEvent.click(emptySquare);
-
-    expect(allSquares.length).toEqual(unselectedSquares.length);
-  });
 });
