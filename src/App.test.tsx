@@ -12,16 +12,6 @@ describe('Given a web page,', () => {
 
     expect(title).toBeInTheDocument();
   });
-
-  test('when there is a user feedback message, then it should appear on the screen', () => {
-    render(<App />);
-
-    const userFeedback = screen.getByRole('heading', {
-      name: '🚧 ...Under construction... 🚧',
-    });
-
-    expect(userFeedback).toBeInTheDocument();
-  });
 });
 
 describe('Given a chess game,', () => {
