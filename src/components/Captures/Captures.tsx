@@ -11,7 +11,7 @@ const Captures: FC<CapturesProps> = ({ children }) => {
   return (
     <section
       className={`captured-pieces-container ${
-        children[0].player === COLOURS.BLACK ? 'captured--align-bottom' : ''
+        children[0]?.player === COLOURS.BLACK ? 'captured--align-bottom' : ''
       }`}
     >
       {children.map(piece => (
