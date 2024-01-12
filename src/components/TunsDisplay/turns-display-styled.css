@@ -2,7 +2,8 @@
   display: flex;
   justify-content: center;
   gap: 25%;
-  width: 70%;
+  width: 50%;
+  max-width: 275px;
 }
 
 .turns-container img {

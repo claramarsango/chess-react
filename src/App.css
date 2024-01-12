@@ -30,17 +30,17 @@ h1 {
 }
 
 .game__match-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-  width: 70%;
-  max-width: 400px;
+  display: grid;
+  grid-template-columns: 5% 85% 5%;
+  justify-content: center;
+  gap: 1.5%;
+  width: 75%;
+  max-width: 500px;
 }
 
 @media (min-width: 1440px) {
   .game__match-container {
-    max-width: 500px;
+    max-width: 600px;
     max-height: 80%;
   }
 }
