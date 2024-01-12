@@ -20,8 +20,7 @@ const Piece: FC<PieceProps> = ({ imageUrl, position }) => {
       selectedPiece && possiblePawnCaptures(selectedPiece, allActivePieces);
 
     if (
-      allPossiblePawnCaptures &&
-      allPossiblePawnCaptures.find(
+      allPossiblePawnCaptures?.find(
         piecePosition => piecePosition === selectedPosition,
       )
     ) {
