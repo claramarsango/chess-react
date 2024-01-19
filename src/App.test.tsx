@@ -1,8 +1,13 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import App from './App';
 import PiecesProvider from './store/context/Pieces.provider';
 import userEvent from '@testing-library/user-event';
+import MockProvider from './mocks/test-utils';
+import {
+  blackTurnPawn,
+  pawnsInBlackCapturePosition,
+} from './mocks/preloaded-state';
 
 describe('Given a web page,', () => {
   test('when there is a title, then it should appear on the screen', () => {
@@ -163,34 +168,52 @@ describe('Given a chess game,', () => {
 
       expect(selectedPawn).toEqual(prevSelectedPawn);
     });
+
+    test('and it moves to capture another piece, then the opposite piece should be captured', async () => {
+      cleanup();
+      render(
+        <MockProvider preloadedState={pawnsInBlackCapturePosition}>
+          <App />
+        </MockProvider>,
+      );
+
+      const boardDispositionBeforeCapture =
+        await screen.findAllByRole('button');
+
+      const whitePawnBeforeMove = screen.getByRole('img', {
+        name: 'white pawn chess piece',
+      });
+
+      await userEvent.click(whitePawnBeforeMove);
+
+      const blackPawnBeforeCapture = screen.getByRole('img', {
+        name: 'black pawn chess piece',
+      });
+
+      await userEvent.click(blackPawnBeforeCapture);
+
+      const boardDispositionAfterCapture = await screen.findAllByRole('button');
+
+      expect(boardDispositionBeforeCapture).not.toEqual(
+        boardDispositionAfterCapture,
+      );
+    });
   });
 
   test('when the opposite player selects a pawn and makes a move to a valid new position, then the pawn should move', async () => {
     render(
-      <PiecesProvider>
+      <MockProvider preloadedState={blackTurnPawn}>
         <App />
-      </PiecesProvider>,
+      </MockProvider>,
     );
-
-    const allWhitePawns = await screen.findAllByRole('img', {
-      name: 'white pawn chess piece',
-    });
-
-    await userEvent.click(allWhitePawns[0]);
-
-    const possibleWhiteMoves = await screen.findAllByTestId(
-      'square--possible-move',
-    );
-
-    await userEvent.click(possibleWhiteMoves[0]);
 
     const boardDispositionBeforeBlackMove =
       await screen.findAllByRole('button');
-    const allBlackPawns = await screen.findAllByRole('img', {
+    const blackPawn = await screen.findByRole('img', {
       name: 'black pawn chess piece',
     });
 
-    await userEvent.click(allBlackPawns[0]);
+    await userEvent.click(blackPawn);
 
     const possibleBlackMoves = await screen.findAllByTestId(
       'square--possible-move',
