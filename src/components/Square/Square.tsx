@@ -49,7 +49,7 @@ const Square: FC<SquareProps> = ({ squarePosition }) => {
   };
 
   const showPossibleMoves = (pieceToMove: PieceModel, newSquare: string) => {
-    return possiblePawnMoves(pieceToMove).find(
+    return possiblePawnMoves(pieceToMove, allActivePieces).find(
       possibleNewPosition => possibleNewPosition === newSquare,
     )
       ? 'square--possible-move'
@@ -66,7 +66,7 @@ const Square: FC<SquareProps> = ({ squarePosition }) => {
     // exits if the new selected position doesn't match with the pawn's possible moves
     if (
       currentPiece &&
-      !possiblePawnMoves(currentPiece).find(
+      !possiblePawnMoves(currentPiece, allActivePieces).find(
         possiblePosition => possiblePosition === newPosition,
       )
     )
