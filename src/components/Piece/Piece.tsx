@@ -14,11 +14,10 @@ const Piece: FC<PieceProps> = ({ imageUrl, position }) => {
   const { allActivePieces, turn } = data;
   const splitImgTitle = imageUrl.split('/')[4].split('.')[0].split('-');
 
+  const selectedPiece = allActivePieces.find(piece => piece.isSelected);
+  const allPossiblePawnCaptures =
+    selectedPiece && possiblePawnCaptures(selectedPiece, allActivePieces);
   const handleClick = (selectedPosition: string) => {
-    const selectedPiece = allActivePieces.find(piece => piece.isSelected);
-    const allPossiblePawnCaptures =
-      selectedPiece && possiblePawnCaptures(selectedPiece, allActivePieces);
-
     if (
       allPossiblePawnCaptures?.find(
         piecePosition => piecePosition === selectedPosition,
@@ -63,8 +62,23 @@ const Piece: FC<PieceProps> = ({ imageUrl, position }) => {
     dispatch({ type: ACTION_TYPES.SELECTED_PIECE, payload: selectedPosition });
   };
 
+  const highlightPossibleCaptureFrom = (
+    possibleCaptures: string[],
+    piecePosition: string,
+  ) => {
+    return possibleCaptures.find(position => piecePosition === position)
+      ? 'piece--possible-capture'
+      : '';
+  };
+
   return (
-    <button className="piece-container" onClick={() => handleClick(position)}>
+    <button
+      className={`piece-container ${
+        allPossiblePawnCaptures &&
+        highlightPossibleCaptureFrom(allPossiblePawnCaptures, position)
+      }`}
+      onClick={() => handleClick(position)}
+    >
       <img
         className="piece__diagram"
         alt={`${splitImgTitle[0]} ${splitImgTitle[1]} chess piece`}
