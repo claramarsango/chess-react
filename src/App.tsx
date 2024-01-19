@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import './App.css';
 import Board from './components/Board/Board';
-import TurnsDisplay from './components/TunsDisplay/TurnsDisplay';
+import TurnsDisplay from './components/TurnsDisplay/TurnsDisplay';
 import PiecesContext from './store/context/chessApp.context';
 import Captures from './components/Captures/Captures';
 import { COLOURS } from './static-data/types';
