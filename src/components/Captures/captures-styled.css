@@ -1,0 +1,17 @@
+.captured-pieces-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.captured--align-bottom {
+  justify-content: end;
+}
+
+.captured-pieces-container .piece-container {
+  padding: 0;
+}
+
+.captured-pieces-container .piece__diagram {
+  vertical-align: middle;
+}

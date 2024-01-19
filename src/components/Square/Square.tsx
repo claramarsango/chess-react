@@ -3,7 +3,7 @@ import './square-styled.css';
 import Piece from '../Piece/Piece';
 import PiecesContext from '../../store/context/chessApp.context';
 import { possiblePawnMoves } from '../../static-data/logic/pieces';
-import { PieceModel } from '../../static-data/types';
+import { ACTION_TYPES, PieceModel } from '../../static-data/types';
 
 interface SquareProps {
   squarePosition: string;
@@ -29,7 +29,9 @@ const Square: FC<SquareProps> = ({ squarePosition }) => {
     ) : (
       <button
         className="square__empty"
-        onClick={() => handleClick(squarePositionOnBoard)}
+        onClick={() =>
+          selectedPiece && handleClick(squarePositionOnBoard, selectedPiece)
+        }
         data-testid="empty-square"
       >
         <div
@@ -47,7 +49,7 @@ const Square: FC<SquareProps> = ({ squarePosition }) => {
   };
 
   const showPossibleMoves = (pieceToMove: PieceModel, newSquare: string) => {
-    return possiblePawnMoves(pieceToMove).find(
+    return possiblePawnMoves(pieceToMove, allActivePieces).find(
       possibleNewPosition => possibleNewPosition === newSquare,
     )
       ? 'square--possible-move'
@@ -60,20 +62,18 @@ const Square: FC<SquareProps> = ({ squarePosition }) => {
       : '';
   };
 
-  const handleClick = (newPosition: string) => {
-    // exits if no pieces are selected
-    if (allActivePieces.every(piece => !piece.isSelected)) return;
+  const handleClick = (newPosition: string, currentPiece: PieceModel) => {
     // exits if the new selected position doesn't match with the pawn's possible moves
     if (
-      selectedPiece &&
-      !possiblePawnMoves(selectedPiece).find(
+      currentPiece &&
+      !possiblePawnMoves(currentPiece, allActivePieces).find(
         possiblePosition => possiblePosition === newPosition,
       )
     )
       return;
 
     dispatch({
-      type: 'movePiece',
+      type: ACTION_TYPES.MOVED_PIECE,
       payload: newPosition,
     });
   };

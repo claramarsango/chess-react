@@ -1,21 +1,30 @@
+import { useContext } from 'react';
 import './App.css';
 import Board from './components/Board/Board';
-import TurnsDisplay from './components/TunsDisplay/TurnsDisplay';
+import TurnsDisplay from './components/TurnsDisplay/TurnsDisplay';
+import PiecesContext from './store/context/chessApp.context';
+import Captures from './components/Captures/Captures';
+import { COLOURS } from './static-data/types';
 
 const App = () => {
+  const { data } = useContext(PiecesContext);
+  const { capturedPieces } = data;
+
   return (
     <>
       <header className="header">
         <h1>Chess</h1>
       </header>
       <main className="game-container">
-        <section className="game__progress-message">
-          <h3>🚧 ...Under construction... 🚧</h3>
-          <p>Thanks for stopping by! 🦦</p>
-        </section>
+        <TurnsDisplay />
         <section className="game__match-container">
-          <TurnsDisplay />
+          <Captures>
+            {capturedPieces.filter(piece => piece.player === COLOURS.BLACK)}
+          </Captures>
           <Board />
+          <Captures>
+            {capturedPieces.filter(piece => piece.player === COLOURS.WHITE)}
+          </Captures>
         </section>
       </main>
     </>

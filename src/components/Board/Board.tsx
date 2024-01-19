@@ -7,7 +7,6 @@ const Board = () => {
   return (
     <section className="board-container">
       <BoardBorder>{ROWS}</BoardBorder>
-
       <div className="board__central-section">
         <BoardBorder>{COLUMNS}</BoardBorder>
         <section className="board__squares-container">
