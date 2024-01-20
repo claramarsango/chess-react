@@ -1,8 +1,8 @@
 import { FC, useContext } from 'react';
-import './piece-styled.css';
 import PiecesContext from '../../store/context/chessApp.context';
 import { possiblePawnCaptures } from '../../static-data/logic/pieces';
 import { ACTION_TYPES } from '../../static-data/types';
+import { PieceButton, PieceDiagram } from './piece.styled';
 
 interface PieceProps {
   imageUrl: string;
@@ -15,21 +15,21 @@ const Piece: FC<PieceProps> = ({ imageUrl, position }) => {
   const splitImgTitle = imageUrl.split('/')[4].split('.')[0].split('-');
 
   const selectedPiece = allActivePieces.find(piece => piece.isSelected);
-  const allPossiblePawnCaptures =
-    selectedPiece && possiblePawnCaptures(selectedPiece, allActivePieces);
+  const capturablePawn =
+    selectedPiece &&
+    possiblePawnCaptures(selectedPiece, allActivePieces).find(
+      capturablePiece => capturablePiece.position === position,
+    );
+
   const handleClick = (selectedPosition: string) => {
-    if (
-      allPossiblePawnCaptures?.find(
-        piecePosition => piecePosition === selectedPosition,
-      )
-    ) {
+    if (capturablePawn) {
       dispatch({
         type: ACTION_TYPES.MOVED_PIECE,
-        payload: selectedPosition,
+        payload: capturablePawn.position,
       });
       return dispatch({
         type: ACTION_TYPES.CAPTURED_PIECE,
-        payload: selectedPosition,
+        payload: capturablePawn.position,
       });
     }
 
@@ -62,29 +62,14 @@ const Piece: FC<PieceProps> = ({ imageUrl, position }) => {
     dispatch({ type: ACTION_TYPES.SELECTED_PIECE, payload: selectedPosition });
   };
 
-  const highlightPossibleCaptureFrom = (
-    possibleCaptures: string[],
-    piecePosition: string,
-  ) => {
-    return possibleCaptures.find(position => piecePosition === position)
-      ? 'piece--possible-capture'
-      : '';
-  };
-
   return (
-    <button
-      className={`piece-container ${
-        allPossiblePawnCaptures &&
-        highlightPossibleCaptureFrom(allPossiblePawnCaptures, position)
-      }`}
-      onClick={() => handleClick(position)}
-    >
-      <img
-        className="piece__diagram"
+    <PieceButton onClick={() => handleClick(position)}>
+      <PieceDiagram
+        $possiblecapture={capturablePawn?.position ?? ''}
         alt={`${splitImgTitle[0]} ${splitImgTitle[1]} chess piece`}
         src={imageUrl}
       />
-    </button>
+    </PieceButton>
   );
 };
 
