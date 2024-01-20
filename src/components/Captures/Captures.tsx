@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import './captures-styled.css';
-import { COLOURS, PieceModel } from '../../static-data/types';
+import { PieceModel } from '../../static-data/types';
 import Piece from '../Piece/Piece';
+import { CapturesContainer } from './captures.styled';
 
 interface CapturesProps {
   children: PieceModel[];
@@ -9,19 +9,15 @@ interface CapturesProps {
 
 const Captures: FC<CapturesProps> = ({ children }) => {
   return (
-    <section
-      className={`captured-pieces-container ${
-        children[0]?.player === COLOURS.BLACK ? 'captured--align-bottom' : ''
-      }`}
-    >
-      {children.map(piece => (
+    <CapturesContainer $capturedpiece={children[0]?.player}>
+      {children.map((piece, i) => (
         <Piece
-          key={piece.position}
+          key={i.toString()}
           imageUrl={piece.diagram}
           position={piece.position}
         />
       ))}
-    </section>
+    </CapturesContainer>
   );
 };
 
