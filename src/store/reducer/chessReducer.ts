@@ -101,6 +101,7 @@ const chessReducer = (
 
         const capturedPiece = {
           ...pieceToCapture,
+          position: '',
           isCaptured: true,
         };
 
