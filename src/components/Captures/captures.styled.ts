@@ -8,7 +8,9 @@ export const CapturesContainer = styled.section<{ $capturedpiece: COLOURS }>`
   justify-content: ${props =>
     props.$capturedpiece === COLOURS.BLACK ? 'end' : ''};
 
-  button {
+  && button {
     padding: 0;
+    background: initial;
+    box-shadow: initial;
   }
 `;

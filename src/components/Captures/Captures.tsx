@@ -10,9 +10,9 @@ interface CapturesProps {
 const Captures: FC<CapturesProps> = ({ children }) => {
   return (
     <CapturesContainer $capturedpiece={children[0]?.player}>
-      {children.map((piece, i) => (
+      {children.map(piece => (
         <Piece
-          key={i.toString()}
+          key={globalThis.crypto.randomUUID()}
           imageUrl={piece.diagram}
           position={piece.position}
         />
