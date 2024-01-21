@@ -1,4 +1,6 @@
 #root {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: auto;
 
@@ -33,6 +35,7 @@ h1 {
   display: grid;
   grid-template-columns: 5% 85% 5%;
   justify-content: center;
+  height: 100%;
   gap: 1.5%;
   width: 75%;
   max-width: 500px;

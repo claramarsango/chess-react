@@ -5,6 +5,7 @@ import TurnsDisplay from './components/TurnsDisplay/TurnsDisplay';
 import PiecesContext from './store/context/chessApp.context';
 import Captures from './components/Captures/Captures';
 import { COLOURS } from './static-data/types';
+import Footer from './components/Footer/Footer';
 
 const App = () => {
   const { data } = useContext(PiecesContext);
@@ -27,6 +28,7 @@ const App = () => {
           </Captures>
         </section>
       </main>
+      <Footer />
     </>
   );
 };
