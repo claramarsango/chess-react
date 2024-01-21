@@ -63,7 +63,12 @@ const Piece: FC<PieceProps> = ({ imageUrl, position }) => {
   };
 
   return (
-    <PieceButton onClick={() => handleClick(position)}>
+    <PieceButton
+      $boardIndex={Number(position[1])}
+      $isSelected={selectedPiece?.position === position}
+      data-testid={selectedPiece?.position === position ? 'selected-piece' : ''}
+      onClick={() => handleClick(position)}
+    >
       <PieceDiagram
         $possiblecapture={capturablePawn?.position ?? ''}
         alt={`${splitImgTitle[0]} ${splitImgTitle[1]} chess piece`}

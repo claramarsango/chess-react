@@ -1,8 +1,8 @@
 import styled from 'styled-components';
+import { BoardSquare } from '../../styles/shared/shared-components.styled';
 
-export const PieceButton = styled.button`
-  background: transparent;
-  border: transparent;
+export const PieceButton = styled(BoardSquare)<{ $isSelected: boolean }>`
+  border: ${props => (props.$isSelected ? '1px solid red' : '0')};
   padding: 5px;
 `;
 
