@@ -52,29 +52,12 @@ export const possiblePawnCaptures = (
     currentPawnColumn + 1,
   )}${oneRowForward}`;
 
-  return checkPossibleCapturesPlayer(
-    pawn,
-    piecesOnBoard,
-    forwardLeftPosition,
-    forwardRightPosition,
-  );
-};
-
-const checkPossibleCapturesPlayer = (
-  pawn: PieceModel,
-  piecesOnBoard: PieceModel[],
-  leftPosition: string,
-  rightPosition: string,
-) => {
-  const allNewPossibleCaptures: string[] = [];
-
-  const existingPieces = piecesOnBoard.filter(
+  const filteredPossibleCaptures = piecesOnBoard.filter(
     piece =>
-      (piece.position === leftPosition || piece.position === rightPosition) &&
+      (piece.position === forwardLeftPosition ||
+        piece.position === forwardRightPosition) &&
       piece.player !== pawn.player,
   );
 
-  existingPieces.forEach(piece => allNewPossibleCaptures.push(piece.position));
-
-  return allNewPossibleCaptures;
+  return filteredPossibleCaptures;
 };

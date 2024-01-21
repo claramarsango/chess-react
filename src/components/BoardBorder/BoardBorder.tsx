@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import './board-border-styled.css';
+import { BorderStyledContainer } from './board-border.styled';
 
 interface BoardBorderProps {
   children: (number | string)[];
@@ -7,25 +7,11 @@ interface BoardBorderProps {
 
 const BoardBorder: FC<BoardBorderProps> = ({ children }) => {
   return (
-    <div
-      className={`board__border ${
-        typeof children[0] === 'string'
-          ? 'border__horizontal'
-          : 'border__vertical'
-      }`}
-    >
-      <div className="filler">/</div>
-
-      <div className="border__text">
-        {children.map(element => (
-          <p className="border__square" key={element}>
-            {element}
-          </p>
-        ))}
-      </div>
-
-      <div className="filler">/</div>
-    </div>
+    <BorderStyledContainer $isRowContainer={typeof children[0] === 'number'}>
+      {children.map(element => (
+        <p key={element}>{element}</p>
+      ))}
+    </BorderStyledContainer>
   );
 };
 

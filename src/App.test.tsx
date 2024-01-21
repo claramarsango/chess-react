@@ -3,11 +3,12 @@ import { cleanup, render, screen } from '@testing-library/react';
 import App from './App';
 import PiecesProvider from './store/context/Pieces.provider';
 import userEvent from '@testing-library/user-event';
-import MockProvider from './mocks/test-utils';
+import MockProvider from './mocks/mock-provider';
 import {
   blackTurnPawn,
   pawnsInBlackCapturePosition,
 } from './mocks/preloaded-state';
+import { cryptoMock } from './mocks/test-utils';
 
 describe('Given a web page,', () => {
   test('when there is a title, then it should appear on the screen', () => {
@@ -22,6 +23,7 @@ describe('Given a web page,', () => {
 describe('Given a chess game,', () => {
   describe('when a pawn within the board is selected,', () => {
     beforeEach(() => {
+      cryptoMock;
       render(
         <PiecesProvider>
           <App />
@@ -36,7 +38,7 @@ describe('Given a chess game,', () => {
 
       await userEvent.click(allWhitePawns[0]);
 
-      const clickedSquare = await screen.findByTestId('square--isSelected');
+      const clickedSquare = await screen.findByTestId('selected-piece');
 
       expect(clickedSquare);
     });
@@ -48,9 +50,7 @@ describe('Given a chess game,', () => {
 
       await userEvent.click(allWhitePawns[0]);
 
-      const possibleMoves = await screen.findAllByTestId(
-        'square--possible-move',
-      );
+      const possibleMoves = await screen.findAllByTestId('possible-move');
 
       expect(possibleMoves);
     });
@@ -62,12 +62,12 @@ describe('Given a chess game,', () => {
 
       await userEvent.click(allWhitePawns[0]);
 
-      const selectedPawn = await screen.findByTestId('square--isSelected');
+      const selectedPawn = await screen.findByTestId('selected-piece');
 
       await userEvent.click(allWhitePawns[0]);
 
       const selectedPawnAfterSecondClick =
-        await screen.findByTestId('square--isSelected');
+        await screen.findByTestId('selected-piece');
 
       expect(selectedPawn).toEqual(selectedPawnAfterSecondClick);
     });
@@ -80,9 +80,7 @@ describe('Given a chess game,', () => {
 
       await userEvent.click(allWhitePawnsBeforeMove[0]);
 
-      const possibleMoves = await screen.findAllByTestId(
-        'square--possible-move',
-      );
+      const possibleMoves = await screen.findAllByTestId('possible-move');
 
       await userEvent.click(possibleMoves[0]);
 
@@ -98,7 +96,7 @@ describe('Given a chess game,', () => {
 
       await userEvent.click(allWhitePawnsBeforeMove[0]);
 
-      const selectedPawn = await screen.findByTestId('square--isSelected');
+      const selectedPawn = await screen.findByTestId('selected-piece');
       const boardDispositionBeforeMove = await screen.findAllByRole('button');
       const emptySquares = await screen.findAllByTestId('empty-square');
       const invalidNewPosition = emptySquares[0];
@@ -106,7 +104,7 @@ describe('Given a chess game,', () => {
       await userEvent.click(invalidNewPosition);
 
       const selectedPawnAfterSecondClick =
-        await screen.findByTestId('square--isSelected');
+        await screen.findByTestId('selected-piece');
       const boardDispositionAfterMove = await screen.findAllByRole('button');
 
       expect(selectedPawn).toEqual(selectedPawnAfterSecondClick);
@@ -120,11 +118,11 @@ describe('Given a chess game,', () => {
 
       await userEvent.click(allWhitePawns[0]);
 
-      const firstSelectedPawn = await screen.findByTestId('square--isSelected');
+      const firstSelectedPawn = await screen.findByTestId('selected-piece');
 
       await userEvent.click(allWhitePawns[1]);
 
-      const newSelectedPawn = await screen.findByTestId('square--isSelected');
+      const newSelectedPawn = await screen.findByTestId('selected-piece');
 
       expect(firstSelectedPawn).not.toEqual(newSelectedPawn);
     });
@@ -136,7 +134,7 @@ describe('Given a chess game,', () => {
 
       await userEvent.click(allWhitePawns[0]);
 
-      const firstSelectedPawn = await screen.findByTestId('square--isSelected');
+      const firstSelectedPawn = await screen.findByTestId('selected-piece');
       const allBlackPawns = await screen.findAllByRole('img', {
         name: 'black pawn chess piece',
       });
@@ -144,7 +142,7 @@ describe('Given a chess game,', () => {
       await userEvent.click(allBlackPawns[0]);
 
       const sameSelectedPawnAfterClick =
-        await screen.findByTestId('square--isSelected');
+        await screen.findByTestId('selected-piece');
 
       expect(firstSelectedPawn).toEqual(sameSelectedPawnAfterClick);
     });
@@ -156,7 +154,7 @@ describe('Given a chess game,', () => {
 
       await userEvent.click(allWhitePawns[0]);
 
-      const selectedPawn = await screen.findByTestId('square--isSelected');
+      const selectedPawn = await screen.findByTestId('selected-piece');
 
       const whiteQueen = await screen.findByRole('img', {
         name: 'white queen chess piece',
@@ -164,7 +162,7 @@ describe('Given a chess game,', () => {
 
       await userEvent.click(whiteQueen);
 
-      const prevSelectedPawn = await screen.findByTestId('square--isSelected');
+      const prevSelectedPawn = await screen.findByTestId('selected-piece');
 
       expect(selectedPawn).toEqual(prevSelectedPawn);
     });
@@ -215,9 +213,7 @@ describe('Given a chess game,', () => {
 
     await userEvent.click(blackPawn);
 
-    const possibleBlackMoves = await screen.findAllByTestId(
-      'square--possible-move',
-    );
+    const possibleBlackMoves = await screen.findAllByTestId('possible-move');
 
     await userEvent.click(possibleBlackMoves[0]);
 
