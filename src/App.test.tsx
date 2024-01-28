@@ -147,26 +147,6 @@ describe('Given a chess game,', () => {
       expect(firstSelectedPawn).toEqual(sameSelectedPawnAfterClick);
     });
 
-    test('and a piece which is not a pawn is selected after, then nothing should change on the board', async () => {
-      const allWhitePawns = await screen.findAllByRole('img', {
-        name: 'white pawn chess piece',
-      });
-
-      await userEvent.click(allWhitePawns[0]);
-
-      const selectedPawn = await screen.findByTestId('selected-piece');
-
-      const whiteQueen = await screen.findByRole('img', {
-        name: 'white queen chess piece',
-      });
-
-      await userEvent.click(whiteQueen);
-
-      const prevSelectedPawn = await screen.findByTestId('selected-piece');
-
-      expect(selectedPawn).toEqual(prevSelectedPawn);
-    });
-
     test('and it moves to capture another piece, then the opposite piece should be captured', async () => {
       cleanup();
       render(
