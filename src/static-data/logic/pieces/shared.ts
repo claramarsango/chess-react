@@ -1,4 +1,4 @@
-import { BOARD } from '../../constants';
+import { BOARD, COLUMNS } from '../../constants';
 import { PieceModel } from '../../types';
 import { possiblePawnCaptures, possiblePawnMoves } from './pawn';
 import { possibleRookCaptures, possibleRookMoves } from './rook';
@@ -15,7 +15,9 @@ export const sortColumnPiecesFrom = (
       columnPiece.position !== piece.position,
   );
 
-  const sortedColumnPieces = Array.from(columnPieces).sort();
+  const sortedColumnPieces = Array.from(columnPieces).sort(
+    (a, b) => Number(a.position[1]) - Number(b.position[1]),
+  );
 
   return sortedColumnPieces;
 };
@@ -32,7 +34,9 @@ export const sortRowPiecesFrom = (
       rowPiece.position !== piece.position,
   );
 
-  const sortedRowPieces = Array.from(rowPieces).sort();
+  const sortedRowPieces = Array.from(rowPieces).sort(
+    (a, b) => COLUMNS.indexOf(a.position[0]) - COLUMNS.indexOf(b.position[0]),
+  );
 
   return sortedRowPieces;
 };
