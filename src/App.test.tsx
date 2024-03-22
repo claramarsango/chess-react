@@ -4,14 +4,18 @@ import App from './App';
 import PiecesProvider from './store/context/Pieces.provider';
 import userEvent from '@testing-library/user-event';
 import MockProvider from './mocks/mock-provider';
+import { cryptoMock } from './mocks/test-utils';
 import {
   blackTurnPawn,
-  kingInDefaultPosition,
   pawnsInBlackCapturePosition,
+} from './mocks/preloaded-state/pawn-mocks';
+import {
   rookInHorizontalBlackCapturePosition,
-  rookInVerticalBlackCapturePosition,
-} from './mocks/preloaded-state';
-import { cryptoMock } from './mocks/test-utils';
+  rookInVerticalDirectBlackCapturePosition,
+  rookWithTwoPawnsInFront,
+  rookWithTwoPawnsToTheRight,
+} from './mocks/preloaded-state/rook-mocks';
+import { kingInDefaultPosition } from './mocks/preloaded-state/king-mocks';
 
 describe('Given a web page,', () => {
   test('when there is a title, then it should appear on the screen', () => {
@@ -208,14 +212,14 @@ describe('Given a chess game,', () => {
   });
 
   describe('when a rook is selected,', () => {
-    test('and it moves vertically to capture an opponent pawn, then the pawn should be captured', async () => {
+    test('and it moves vertically to capture an opponent pawn directly in front of it, then the pawn should be captured', async () => {
       render(
-        <MockProvider preloadedState={rookInVerticalBlackCapturePosition}>
+        <MockProvider preloadedState={rookInVerticalDirectBlackCapturePosition}>
           <App />
         </MockProvider>,
       );
 
-      const whiteRookBeforeMove = await screen.getByRole('button', {
+      const whiteRookBeforeMove = screen.getByRole('button', {
         name: 'white rook chess piece',
       });
       const boardDispositionBeforeMove = await screen.findAllByRole('button');
@@ -233,14 +237,41 @@ describe('Given a chess game,', () => {
       expect(boardDispositionBeforeMove).not.toEqual(boardDispositionAfterMove);
     });
 
-    test('and it moves horizontally to capture an opponent pawn, then the pawn should be captured', async () => {
+    test('and it attempts to capture an opponent pawn not directly in front of it, then the rook should not move', async () => {
+      render(
+        <MockProvider preloadedState={rookWithTwoPawnsInFront}>
+          <App />
+        </MockProvider>,
+      );
+
+      const whiteRookBeforeMove = screen.getByRole('button', {
+        name: 'white rook chess piece',
+      });
+
+      await userEvent.click(whiteRookBeforeMove);
+
+      const blackPawnsOnBoard = await screen.findAllByRole('img', {
+        name: 'black pawn chess piece',
+      });
+      const lastBlackPawn = blackPawnsOnBoard[0];
+
+      await userEvent.click(lastBlackPawn);
+
+      const blackPawnsOnBoardAfterMove = await screen.findAllByRole('img', {
+        name: 'black pawn chess piece',
+      });
+
+      expect(blackPawnsOnBoard).toEqual(blackPawnsOnBoardAfterMove);
+    });
+
+    test('and it moves horizontally to capture an opponent pawn directly beside it, then the pawn should be captured', async () => {
       render(
         <MockProvider preloadedState={rookInHorizontalBlackCapturePosition}>
           <App />
         </MockProvider>,
       );
 
-      const whiteRookBeforeMove = await screen.getByRole('button', {
+      const whiteRookBeforeMove = screen.getByRole('button', {
         name: 'white rook chess piece',
       });
       const boardDispositionBeforeMove = await screen.findAllByRole('button');
@@ -259,6 +290,33 @@ describe('Given a chess game,', () => {
     });
   });
 
+  test('and it attempts to capture an opponent pawn not directly beside it, then the rook should not move', async () => {
+    render(
+      <MockProvider preloadedState={rookWithTwoPawnsToTheRight}>
+        <App />
+      </MockProvider>,
+    );
+
+    const whiteRookBeforeMove = screen.getByRole('button', {
+      name: 'white rook chess piece',
+    });
+
+    await userEvent.click(whiteRookBeforeMove);
+
+    const blackPawnsOnBoard = await screen.findAllByRole('img', {
+      name: 'black pawn chess piece',
+    });
+    const lastBlackPawn = blackPawnsOnBoard[blackPawnsOnBoard.length - 1];
+
+    await userEvent.click(lastBlackPawn);
+
+    const blackPawnsOnBoardAfterMove = await screen.findAllByRole('img', {
+      name: 'black pawn chess piece',
+    });
+
+    expect(blackPawnsOnBoard).toEqual(blackPawnsOnBoardAfterMove);
+  });
+
   test('when a piece with no possible moves is selected, no possible moves should display on the board', async () => {
     render(
       <MockProvider preloadedState={kingInDefaultPosition}>
@@ -266,7 +324,7 @@ describe('Given a chess game,', () => {
       </MockProvider>,
     );
 
-    const whiteKing = await screen.getByRole('button', {
+    const whiteKing = screen.getByRole('button', {
       name: 'white king chess piece',
     });
 
