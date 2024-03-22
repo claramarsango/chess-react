@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import PiecesContext from '../../store/context/chessApp.context';
 import { ACTION_TYPES, PieceModel } from '../../static-data/types';
-import { possiblePawnMoves } from '../../static-data/logic/pieces';
+import { possibleMovesFrom } from '../../static-data/logic/pieces/shared';
 
 const usePieces = () => {
   const { data, dispatch } = useContext(PiecesContext);
@@ -12,13 +12,6 @@ const usePieces = () => {
     if (
       allActivePieces.find(
         piece => piece.position === selectedPosition && piece.player !== turn,
-      )
-    )
-      return;
-    //exits if the selected piece is not a pawn
-    if (
-      allActivePieces.find(
-        piece => piece.position === selectedPosition && piece.piece !== 'pawn',
       )
     )
       return;
@@ -49,10 +42,10 @@ const usePieces = () => {
   };
 
   const movePiece = (currentPiece: PieceModel, newPosition: string) => {
-    // exits if the new selected position doesn't match with the pawn's possible moves
+    // exits if the new selected position doesn't match with the piece's possible moves
     if (
       currentPiece &&
-      !possiblePawnMoves(currentPiece, allActivePieces).find(
+      !possibleMovesFrom(currentPiece, allActivePieces).find(
         possiblePosition => possiblePosition === newPosition,
       )
     )

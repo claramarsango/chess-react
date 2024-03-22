@@ -1,8 +1,8 @@
 import { FC } from 'react';
-import { possiblePawnMoves } from '../../static-data/logic/pieces';
 import { BoardSquare } from '../../styles/shared/shared-components.styled';
 import { PossibleMoveHighlight } from './empty-square.styled';
 import usePieces from '../hooks/usePieces';
+import { possibleMovesFrom } from '../../static-data/logic/pieces/shared';
 
 interface EmptySquareProps {
   squarePosition: string;
@@ -15,7 +15,7 @@ const EmptySquare: FC<EmptySquareProps> = ({ squarePosition }) => {
   const selectedPiece = allActivePieces.find(piece => piece.isSelected);
   const possibleMove =
     selectedPiece &&
-    possiblePawnMoves(selectedPiece, allActivePieces).find(
+    possibleMovesFrom(selectedPiece, allActivePieces)?.find(
       possibleNewPosition => possibleNewPosition === squarePosition,
     );
 

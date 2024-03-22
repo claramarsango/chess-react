@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import { possiblePawnCaptures } from '../../static-data/logic/pieces';
 import { PieceButton, PieceDiagram } from './piece.styled';
 import usePieces from '../hooks/usePieces';
+import { possibleCapturesFrom } from '../../static-data/logic/pieces/shared';
 
 interface PieceProps {
   imageUrl: string;
@@ -13,10 +13,10 @@ const Piece: FC<PieceProps> = ({ imageUrl, position }) => {
   const { allActivePieces } = data;
   const splitImgTitle = imageUrl.split('/')[4].split('.')[0].split('-');
   const selectedPiece = allActivePieces.find(piece => piece.isSelected);
-  const capturablePawn =
+  const capturablePiece =
     selectedPiece &&
-    possiblePawnCaptures(selectedPiece, allActivePieces).find(
-      capturablePiece => capturablePiece.position === position,
+    possibleCapturesFrom(selectedPiece, allActivePieces).find(
+      piece => piece?.position === position,
     );
 
   return (
@@ -25,11 +25,11 @@ const Piece: FC<PieceProps> = ({ imageUrl, position }) => {
       $isSelected={selectedPiece?.position === position}
       data-testid={selectedPiece?.position === position ? 'selected-piece' : ''}
       onClick={() =>
-        capturablePawn ? capturePieceAt(position) : selectPieceAt(position)
+        capturablePiece ? capturePieceAt(position) : selectPieceAt(position)
       }
     >
       <PieceDiagram
-        $possiblecapture={capturablePawn?.position ?? ''}
+        $possiblecapture={capturablePiece?.position ?? ''}
         alt={`${splitImgTitle[0]} ${splitImgTitle[1]} chess piece`}
         src={imageUrl}
       />

@@ -1,5 +1,5 @@
-import { ALL_INITIAL_PIECES, COLUMNS } from '.././constants';
-import { COLOURS, PieceModel } from '.././types';
+import { ALL_INITIAL_PIECES, COLUMNS } from '../../constants';
+import { COLOURS, PieceModel } from '../../types';
 
 export const possiblePawnMoves = (
   pawn: PieceModel,

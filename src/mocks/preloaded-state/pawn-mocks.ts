@@ -1,4 +1,4 @@
-import { COLOURS, DataStructure, PieceModel } from '../static-data/types';
+import { COLOURS, DataStructure, PieceModel } from '../../static-data/types';
 
 const defaultWhitePawn: PieceModel = {
   piece: 'pawn',
@@ -9,7 +9,7 @@ const defaultWhitePawn: PieceModel = {
   position: 'E2',
 };
 
-const defaultBlackPawn: PieceModel = {
+export const defaultBlackPawn: PieceModel = {
   piece: 'pawn',
   diagram: '/assets/chess-pieces/black/black-pawn.png',
   isCaptured: false,
