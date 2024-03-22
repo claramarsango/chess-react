@@ -98,7 +98,7 @@ export const findClosestRowPiecesFrom = (
   const firstPiecePositionLeft =
     currentRowPieces.findLast(
       rowPiece => currentPieceColumn > rowPiece.position[0],
-    )?.position ?? `${currentPieceColumn}0`;
+    )?.position ?? `0${currentPieceRow}`;
 
   const firstPiecePositionRight =
     currentRowPieces.find(rowPiece => rowPiece.position[0] > currentPieceColumn)
