@@ -46,28 +46,50 @@ export const filterRowPiecesFrom = (
   return rowPiecesInOrder;
 };
 
+const findClosestPieceAbove = (
+  currentPiece: PieceModel,
+  columnPieces: PieceModel[],
+) => {
+  const currentPieceColumn = currentPiece.position[0];
+  const currentPieceRow = currentPiece.position[1];
+  const firstPieceAbove = columnPieces.find(
+    columnPiece => columnPiece.position[1] > currentPieceRow,
+  );
+
+  return firstPieceAbove?.position ?? `${currentPieceColumn}9`;
+};
+
+const findClosestPieceBelow = (
+  currentPiece: PieceModel,
+  columnPieces: PieceModel[],
+) => {
+  const currentPieceColumn = currentPiece.position[0];
+  const currentPieceRow = currentPiece.position[1];
+  const firstPieceBelow = columnPieces.findLast(
+    columnPiece => currentPieceRow > columnPiece.position[1],
+  );
+
+  return firstPieceBelow?.position ?? `${currentPieceColumn}0`;
+};
+
 export const findClosestColumnPiecesFrom = (
   piece: PieceModel,
   piecesOnBoard: PieceModel[],
 ) => {
   const closestColumnPiecePositions: string[] = [];
-  const currentPieceColumn = piece.position[0];
-  const currentPieceRow = piece.position[1];
   const currentColumnPieces = filterColumnPiecesFrom(piece, piecesOnBoard);
-
-  const firstPiecePositionUp =
-    currentColumnPieces.find(
-      columnPiece => columnPiece.position[1] > currentPieceRow,
-    )?.position ?? `${currentPieceColumn}9`;
-
-  const firstPiecePositionDown =
-    currentColumnPieces.findLast(
-      columnPiece => currentPieceRow > columnPiece.position[1],
-    )?.position ?? `${currentPieceColumn}0`;
+  const firstPiecePositionAbove = findClosestPieceAbove(
+    piece,
+    currentColumnPieces,
+  );
+  const firstPiecePositionBelow = findClosestPieceBelow(
+    piece,
+    currentColumnPieces,
+  );
 
   closestColumnPiecePositions.push(
-    firstPiecePositionUp,
-    firstPiecePositionDown,
+    firstPiecePositionAbove,
+    firstPiecePositionBelow,
   );
 
   return closestColumnPiecePositions;
@@ -95,23 +117,43 @@ export const possibleVerticalMovesFrom = (
   return freeVerticalPositions;
 };
 
+const findClosestPieceLeft = (
+  currentPiece: PieceModel,
+  rowPieces: PieceModel[],
+) => {
+  const currentPieceColumn = currentPiece.position[0];
+  const currentPieceRow = currentPiece.position[1];
+  const firstPieceLeft = rowPieces.findLast(
+    rowPiece => currentPieceColumn > rowPiece.position[0],
+  );
+
+  return firstPieceLeft?.position ?? `0${currentPieceRow}`;
+};
+
+const findClosestPieceRight = (
+  currentPiece: PieceModel,
+  rowPieces: PieceModel[],
+) => {
+  const currentPieceColumn = currentPiece.position[0];
+  const currentPieceRow = currentPiece.position[1];
+  const firstPieceRight = rowPieces.find(
+    rowPiece => rowPiece.position[0] > currentPieceColumn,
+  );
+
+  return firstPieceRight?.position ?? `I${currentPieceRow}`;
+};
+
 export const findClosestRowPiecesFrom = (
   piece: PieceModel,
   piecesOnBoard: PieceModel[],
 ) => {
   const closestRowPiecePositions: string[] = [];
-  const currentPieceColumn = piece.position[0];
-  const currentPieceRow = piece.position[1];
   const currentRowPieces = filterRowPiecesFrom(piece, piecesOnBoard);
-
-  const firstPiecePositionLeft =
-    currentRowPieces.findLast(
-      rowPiece => currentPieceColumn > rowPiece.position[0],
-    )?.position ?? `0${currentPieceRow}`;
-
-  const firstPiecePositionRight =
-    currentRowPieces.find(rowPiece => rowPiece.position[0] > currentPieceColumn)
-      ?.position ?? `I${currentPieceRow}`;
+  const firstPiecePositionLeft = findClosestPieceLeft(piece, currentRowPieces);
+  const firstPiecePositionRight = findClosestPieceRight(
+    piece,
+    currentRowPieces,
+  );
 
   closestRowPiecePositions.push(
     firstPiecePositionLeft,
