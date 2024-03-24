@@ -3,42 +3,73 @@ import { PieceModel } from '../../types';
 import { possiblePawnCaptures, possiblePawnMoves } from './pawn';
 import { possibleRookCaptures, possibleRookMoves } from './rook';
 
-export const sortColumnPiecesFrom = (
+const filterUnselectedPiecesOnBoard = (piecesOnBoard: PieceModel[]) => {
+  return piecesOnBoard.filter(piece => !piece.isSelected);
+};
+
+const sortColumnPieces = (columnPieces: PieceModel[]) => {
+  const sortedColumnPieces = Array.from(columnPieces).sort(
+    (a, b) => Number(a.position[1]) - Number(b.position[1]),
+  );
+  return sortedColumnPieces;
+};
+
+const filterColumnPiecesFrom = (
   piece: PieceModel,
   piecesOnBoard: PieceModel[],
 ) => {
   const currentPieceColumn = piece.position[0];
-
-  const columnPieces = piecesOnBoard.filter(
-    columnPiece =>
-      columnPiece.position.startsWith(currentPieceColumn) &&
-      columnPiece.position !== piece.position,
+  const filteredColumnPieces = piecesOnBoard.filter(columnPiece =>
+    columnPiece.position.startsWith(currentPieceColumn),
   );
-
-  const sortedColumnPieces = Array.from(columnPieces).sort(
-    (a, b) => Number(a.position[1]) - Number(b.position[1]),
-  );
-
-  return sortedColumnPieces;
+  const columnPiecesInOrder = sortColumnPieces(filteredColumnPieces);
+  return columnPiecesInOrder;
 };
 
-export const sortRowPiecesFrom = (
+const sortRowPieces = (rowPieces: PieceModel[]) => {
+  const sortedRowPieces = Array.from(rowPieces).sort(
+    (a, b) => COLUMNS.indexOf(a.position[0]) - COLUMNS.indexOf(b.position[0]),
+  );
+  return sortedRowPieces;
+};
+
+export const filterRowPiecesFrom = (
   piece: PieceModel,
   piecesOnBoard: PieceModel[],
 ) => {
   const currentPieceRow = piece.position[1];
+  const rowPieces = piecesOnBoard.filter(rowPiece =>
+    rowPiece.position.endsWith(currentPieceRow),
+  );
+  const rowPiecesInOrder = sortRowPieces(rowPieces);
 
-  const rowPieces = piecesOnBoard.filter(
-    rowPiece =>
-      rowPiece.position.endsWith(currentPieceRow) &&
-      rowPiece.position !== piece.position,
+  return rowPiecesInOrder;
+};
+
+const findClosestPieceAbove = (
+  currentPiece: PieceModel,
+  columnPieces: PieceModel[],
+) => {
+  const currentPieceColumn = currentPiece.position[0];
+  const currentPieceRow = currentPiece.position[1];
+  const firstPieceAbove = columnPieces.find(
+    columnPiece => columnPiece.position[1] > currentPieceRow,
   );
 
-  const sortedRowPieces = Array.from(rowPieces).sort(
-    (a, b) => COLUMNS.indexOf(a.position[0]) - COLUMNS.indexOf(b.position[0]),
+  return firstPieceAbove?.position ?? `${currentPieceColumn}9`;
+};
+
+const findClosestPieceBelow = (
+  currentPiece: PieceModel,
+  columnPieces: PieceModel[],
+) => {
+  const currentPieceColumn = currentPiece.position[0];
+  const currentPieceRow = currentPiece.position[1];
+  const firstPieceBelow = columnPieces.findLast(
+    columnPiece => currentPieceRow > columnPiece.position[1],
   );
 
-  return sortedRowPieces;
+  return firstPieceBelow?.position ?? `${currentPieceColumn}0`;
 };
 
 export const findClosestColumnPiecesFrom = (
@@ -46,23 +77,19 @@ export const findClosestColumnPiecesFrom = (
   piecesOnBoard: PieceModel[],
 ) => {
   const closestColumnPiecePositions: string[] = [];
-  const currentPieceColumn = piece.position[0];
-  const currentPieceRow = piece.position[1];
-  const currentColumnPieces = sortColumnPiecesFrom(piece, piecesOnBoard);
-
-  const firstPiecePositionUp =
-    currentColumnPieces.find(
-      columnPiece => columnPiece.position[1] > currentPieceRow,
-    )?.position ?? `${currentPieceColumn}9`;
-
-  const firstPiecePositionDown =
-    currentColumnPieces.findLast(
-      columnPiece => currentPieceRow > columnPiece.position[1],
-    )?.position ?? `${currentPieceColumn}0`;
+  const currentColumnPieces = filterColumnPiecesFrom(piece, piecesOnBoard);
+  const firstPiecePositionAbove = findClosestPieceAbove(
+    piece,
+    currentColumnPieces,
+  );
+  const firstPiecePositionBelow = findClosestPieceBelow(
+    piece,
+    currentColumnPieces,
+  );
 
   closestColumnPiecePositions.push(
-    firstPiecePositionUp,
-    firstPiecePositionDown,
+    firstPiecePositionAbove,
+    firstPiecePositionBelow,
   );
 
   return closestColumnPiecePositions;
@@ -90,23 +117,43 @@ export const possibleVerticalMovesFrom = (
   return freeVerticalPositions;
 };
 
+const findClosestPieceLeft = (
+  currentPiece: PieceModel,
+  rowPieces: PieceModel[],
+) => {
+  const currentPieceColumn = currentPiece.position[0];
+  const currentPieceRow = currentPiece.position[1];
+  const firstPieceLeft = rowPieces.findLast(
+    rowPiece => currentPieceColumn > rowPiece.position[0],
+  );
+
+  return firstPieceLeft?.position ?? `0${currentPieceRow}`;
+};
+
+const findClosestPieceRight = (
+  currentPiece: PieceModel,
+  rowPieces: PieceModel[],
+) => {
+  const currentPieceColumn = currentPiece.position[0];
+  const currentPieceRow = currentPiece.position[1];
+  const firstPieceRight = rowPieces.find(
+    rowPiece => rowPiece.position[0] > currentPieceColumn,
+  );
+
+  return firstPieceRight?.position ?? `I${currentPieceRow}`;
+};
+
 export const findClosestRowPiecesFrom = (
   piece: PieceModel,
   piecesOnBoard: PieceModel[],
 ) => {
   const closestRowPiecePositions: string[] = [];
-  const currentPieceColumn = piece.position[0];
-  const currentPieceRow = piece.position[1];
-  const currentRowPieces = sortRowPiecesFrom(piece, piecesOnBoard);
-
-  const firstPiecePositionLeft =
-    currentRowPieces.findLast(
-      rowPiece => currentPieceColumn > rowPiece.position[0],
-    )?.position ?? `0${currentPieceRow}`;
-
-  const firstPiecePositionRight =
-    currentRowPieces.find(rowPiece => rowPiece.position[0] > currentPieceColumn)
-      ?.position ?? `I${currentPieceRow}`;
+  const currentRowPieces = filterRowPiecesFrom(piece, piecesOnBoard);
+  const firstPiecePositionLeft = findClosestPieceLeft(piece, currentRowPieces);
+  const firstPiecePositionRight = findClosestPieceRight(
+    piece,
+    currentRowPieces,
+  );
 
   closestRowPiecePositions.push(
     firstPiecePositionLeft,
@@ -156,11 +203,13 @@ export const possibleCapturesFrom = (
   selectedPiece: PieceModel,
   piecesOnBoard: PieceModel[],
 ) => {
+  const unselectedPiecesOnBoard = filterUnselectedPiecesOnBoard(piecesOnBoard);
+
   switch (selectedPiece.piece) {
     case 'pawn':
-      return possiblePawnCaptures(selectedPiece, piecesOnBoard);
+      return possiblePawnCaptures(selectedPiece, unselectedPiecesOnBoard);
     case 'rook':
-      return possibleRookCaptures(selectedPiece, piecesOnBoard);
+      return possibleRookCaptures(selectedPiece, unselectedPiecesOnBoard);
     default:
       return [];
   }

@@ -13,13 +13,13 @@ export const defaultBlackPawn: PieceModel = {
   piece: 'pawn',
   diagram: '/assets/chess-pieces/black/black-pawn.png',
   isCaptured: false,
-  isSelected: true,
+  isSelected: false,
   player: COLOURS.BLACK,
   position: 'D7',
 };
 
 export const blackTurnPawn: DataStructure = {
-  allActivePieces: [defaultBlackPawn],
+  allActivePieces: [{ ...defaultBlackPawn, isSelected: true }],
   turn: COLOURS.BLACK,
   capturedPieces: [],
 };
