@@ -29,22 +29,36 @@ export const buildPiece = (
   return completePiece;
 };
 
+const defineFrontRowFrom = (colour: COLOURS) => {
+  const currentFrontRow = colour === COLOURS.WHITE ? '2' : '7';
+  return currentFrontRow;
+};
+
+const filterFrontRowPositionsFrom = (currentFrontRow: string) => {
+  return BOARD.filter((square: string) => square[1] === currentFrontRow);
+};
+
+const buildFrontRowFormationFor = (colour: COLOURS) => {
+  const frontRow = defineFrontRowFrom(colour);
+  const frontRowPositions = filterFrontRowPositionsFrom(frontRow);
+  const frontRowPieces = frontRowPositions.map(position =>
+    buildPiece(colour, 'pawn', position),
+  );
+
+  return frontRowPieces;
+};
+
 export const buildInitialFormationFor = (colour: COLOURS) => {
   const allPieces: PieceModel[] = [];
 
+  const builtFrontRow = buildFrontRowFormationFor(colour);
+  builtFrontRow.forEach(piece => allPieces.push(piece));
+
   const backRow = colour === COLOURS.WHITE ? '1' : '8';
-  const frontRow = colour === COLOURS.WHITE ? '2' : '7';
 
   const backRowPositions: string[] = BOARD.filter(
     (square: string) => square[1] === backRow,
   );
-  const frontRowPositions = BOARD.filter(
-    (square: string) => square[1] === frontRow,
-  );
-
-  for (const position of frontRowPositions) {
-    allPieces.push(buildPiece(colour, 'pawn', position));
-  }
 
   for (let i = 0; i <= 4; i++) {
     const position = backRowPositions[i];
