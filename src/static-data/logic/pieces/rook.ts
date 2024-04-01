@@ -1,5 +1,7 @@
 import { PieceModel } from '../../types';
 import {
+  filterColumnPiecesFrom,
+  filterRowPiecesFrom,
   findClosestColumnPiecesFrom,
   findClosestRowPiecesFrom,
   possibleHorizontalMovesFrom,
@@ -10,28 +12,23 @@ export const possibleRookMoves = (
   rook: PieceModel,
   piecesOnBoard: PieceModel[],
 ) => {
+  const filteredRowPieces = filterRowPiecesFrom(rook, piecesOnBoard);
+  const filteredColumnPieces = filterColumnPiecesFrom(rook, piecesOnBoard);
   const allPossibleMoves = possibleHorizontalMovesFrom(
     rook,
-    piecesOnBoard,
-  ).concat(possibleVerticalMovesFrom(rook, piecesOnBoard));
+    filteredRowPieces,
+  ).concat(possibleVerticalMovesFrom(rook, filteredColumnPieces));
 
   return allPossibleMoves;
 };
 
 const findOpponentPiecesFrom = (
-  capturablePositions: string[],
-  piecesOnBoard: PieceModel[],
+  capturablePieces: PieceModel[],
   currentPiece: PieceModel,
 ) => {
-  const filteredOpponentPieces: PieceModel[] = [];
-
-  for (const position of capturablePositions) {
-    const opponentPiece = piecesOnBoard.find(
-      piece =>
-        piece.position === position && piece.player !== currentPiece.player,
-    );
-    if (opponentPiece) filteredOpponentPieces.push(opponentPiece);
-  }
+  const filteredOpponentPieces = capturablePieces.filter(
+    opponentPiece => opponentPiece.player !== currentPiece.player,
+  );
 
   return filteredOpponentPieces;
 };
@@ -40,16 +37,18 @@ export const possibleRookCaptures = (
   rook: PieceModel,
   piecesOnBoard: PieceModel[],
 ) => {
-  const closestPiecePositions = findClosestRowPiecesFrom(
+  const filteredRowPieces = filterRowPiecesFrom(rook, piecesOnBoard);
+  const filteredColumnPieces = filterColumnPiecesFrom(rook, piecesOnBoard);
+  const closestColumnPieces = findClosestColumnPiecesFrom(
     rook,
-    piecesOnBoard,
-  ).concat(findClosestColumnPiecesFrom(rook, piecesOnBoard));
-
-  const possibleCaptures = findOpponentPiecesFrom(
-    closestPiecePositions,
-    piecesOnBoard,
-    rook,
+    filteredColumnPieces,
   );
+  const closestRowPieces = findClosestRowPiecesFrom(rook, filteredRowPieces);
+  const surroundingPieces = closestColumnPieces
+    .concat(closestRowPieces)
+    .filter(piece => piece) as PieceModel[];
+
+  const possibleCaptures = findOpponentPiecesFrom(surroundingPieces, rook);
 
   return possibleCaptures;
 };
