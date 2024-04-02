@@ -3,6 +3,15 @@ export enum COLOURS {
   BLACK = 'black',
 }
 
+export enum PIECE_NAMES {
+  PAWN = 'pawn',
+  ROOK = 'rook',
+  KNIGHT = 'knight',
+  BISHOP = 'bishop',
+  QUEEN = 'queen',
+  KING = 'king',
+}
+
 export interface PieceModel {
   player: COLOURS;
   piece: string;
