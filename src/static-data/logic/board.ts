@@ -1,5 +1,5 @@
 import { BOARD } from '../constants';
-import { COLOURS, PieceModel } from '../types';
+import { COLOURS, PIECE_NAMES, PieceModel } from '../types';
 
 export const buildEmptyBoard = (rows: number[], columns: string[]) => {
   const completeBoard: string[] = [];
@@ -15,7 +15,7 @@ export const buildEmptyBoard = (rows: number[], columns: string[]) => {
 
 export const buildPiece = (
   colour: COLOURS,
-  piece: string,
+  piece: PIECE_NAMES,
   position: string,
 ) => {
   const completePiece: PieceModel = {
@@ -42,44 +42,71 @@ const buildFrontRowFormationFor = (colour: COLOURS) => {
   const frontRow = defineFrontRowFrom(colour);
   const frontRowPositions = filterFrontRowPositionsFrom(frontRow);
   const frontRowPieces = frontRowPositions.map(position =>
-    buildPiece(colour, 'pawn', position),
+    buildPiece(colour, PIECE_NAMES.PAWN, position),
   );
 
   return frontRowPieces;
 };
 
-export const buildInitialFormationFor = (colour: COLOURS) => {
-  const allPieces: PieceModel[] = [];
+const defineBackRowFrom = (colour: COLOURS) => {
+  const currentBackRow = colour === COLOURS.WHITE ? '1' : '8';
+  return currentBackRow;
+};
 
-  const builtFrontRow = buildFrontRowFormationFor(colour);
-  builtFrontRow.forEach(piece => allPieces.push(piece));
+const filterBackRowPositionsFrom = (currentBackRow: string) => {
+  return BOARD.filter((square: string) => square[1] === currentBackRow);
+};
 
-  const backRow = colour === COLOURS.WHITE ? '1' : '8';
-
-  const backRowPositions: string[] = BOARD.filter(
-    (square: string) => square[1] === backRow,
+const buildBackRowLateralPiecesFrom = (
+  colour: COLOURS,
+  backRowPositions: string[],
+  lateralPiecesNames: PIECE_NAMES[],
+) => {
+  const builtLeftLateralPieces = lateralPiecesNames.map((piece, index) =>
+    buildPiece(colour, piece, backRowPositions[index]),
+  );
+  const builtRightLateralPieces = lateralPiecesNames.map((piece, index) =>
+    buildPiece(
+      colour,
+      piece,
+      backRowPositions[backRowPositions.length - (index + 1)],
+    ),
+  );
+  const builtLateralPieces = builtLeftLateralPieces.concat(
+    builtRightLateralPieces,
   );
 
-  for (let i = 0; i <= 4; i++) {
-    const position = backRowPositions[i];
-    const reversedBackRowPositions = Array.from(backRowPositions).reverse();
-    const oppositeEnd = reversedBackRowPositions[i];
+  return builtLateralPieces;
+};
 
-    if (!i) {
-      allPieces.push(buildPiece(colour, 'rook', position));
-      allPieces.push(buildPiece(colour, 'rook', oppositeEnd));
-    } else if (i === 1) {
-      allPieces.push(buildPiece(colour, 'knight', position));
-      allPieces.push(buildPiece(colour, 'knight', oppositeEnd));
-    } else if (i === 2) {
-      allPieces.push(buildPiece(colour, 'bishop', position));
-      allPieces.push(buildPiece(colour, 'bishop', oppositeEnd));
-    } else if (i === 3) {
-      allPieces.push(buildPiece(colour, 'queen', position));
-    } else {
-      allPieces.push(buildPiece(colour, 'king', position));
-    }
-  }
+const buildBackRowFormationFor = (colour: COLOURS) => {
+  const backRow = defineBackRowFrom(colour);
+  const backRowPositions = filterBackRowPositionsFrom(backRow);
+  const backRowPieces: PieceModel[] = [];
+  const lateralPiecesNames = [
+    PIECE_NAMES.ROOK,
+    PIECE_NAMES.KNIGHT,
+    PIECE_NAMES.BISHOP,
+  ];
+  const lateralPieces = buildBackRowLateralPiecesFrom(
+    colour,
+    backRowPositions,
+    lateralPiecesNames,
+  );
+  const queen = buildPiece(colour, PIECE_NAMES.QUEEN, backRowPositions[3]);
+  const king = buildPiece(colour, PIECE_NAMES.KING, backRowPositions[4]);
+
+  lateralPieces.forEach(piece => backRowPieces.push(piece));
+  backRowPieces.push(queen);
+  backRowPieces.push(king);
+
+  return backRowPieces;
+};
+
+export const buildInitialFormationFor = (colour: COLOURS) => {
+  const builtFrontRow = buildFrontRowFormationFor(colour);
+  const builtBackRow = buildBackRowFormationFor(colour);
+  const allPieces = builtFrontRow.concat(builtBackRow);
 
   return allPieces;
 };
